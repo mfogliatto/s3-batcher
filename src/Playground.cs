@@ -11,7 +11,7 @@ namespace S3Batcher
 {
     class Playground
     {
-        static void Main(string[] args)
+        static void Entry(string[] args)
         {
             // parse arguments
             // authenticate
