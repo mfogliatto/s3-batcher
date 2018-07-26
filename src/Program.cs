@@ -6,8 +6,7 @@ namespace s3_batcher
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Nothing here yet!");
         }
-        
     }
 }
