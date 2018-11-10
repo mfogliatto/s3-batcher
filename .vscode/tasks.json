@@ -9,7 +9,7 @@
                 "build",
                 "${workspaceFolder}/s3-batcher.csproj"
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": []
         }
     ]
 }
