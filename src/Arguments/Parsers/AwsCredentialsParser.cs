@@ -5,7 +5,7 @@ using Amazon.Runtime;
 
 namespace S3Batcher.Arguments
 {
-    sealed class AwsCredentialsProvider : IProvider<BasicAWSCredentials>
+    sealed class AwsCredentialsParser : IParser<BasicAWSCredentials>
     {
         private const string ACCESS_KEY = "access-key";
         private const string SECRET_KEY = "secret-key";

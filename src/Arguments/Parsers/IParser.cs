@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace S3Batcher.Arguments
 {
-    interface IProvider<T>
+    interface IParser<out T>
     {
-        T GetFrom(IList<Argument> args);
+        T GetFrom(IEnumerable<Argument> args);
     }
 }
