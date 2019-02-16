@@ -1,12 +1,17 @@
 using System;
+using System.Linq;
+using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
 
 namespace S3Batcher
 {
-    public sealed class Authenticator
+    sealed class Authenticator
     {
-        public bool Authenticate()
+        public AmazonS3Client Authenticate(string accessKey, string secretKey, string regionName)
         {
-            throw new NotImplementedException();
+            var region = RegionEndpoint.EnumerableAllRegions.First(_ => _.SystemName == regionName);
+            return new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey), region);
         }
     }
 }

@@ -9,9 +9,8 @@ namespace S3Batcher.Arguments
 
         private string _arg;
 
-        public string Key => _arg.Substring(PREFIX.Length);
-        public string Value => IsBoolean ? "" : _arg.Substring(VALUE_DELIMITER);
-        public bool IsBoolean => _arg.IndexOf('=') == -1;
+        public string Key => _arg.Substring(PREFIX.Length, _arg.IndexOf(VALUE_DELIMITER) - PREFIX.Length);
+        public string Value => _arg.Substring(_arg.IndexOf(VALUE_DELIMITER) + 1);
 
         public Argument(string arg)
         {
