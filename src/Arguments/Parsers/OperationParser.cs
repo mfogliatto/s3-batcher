@@ -8,14 +8,16 @@ namespace S3Batcher.Arguments
     sealed class OperationParser : IParser<OperationArgument>
     {
         private const string OPERATION_KEY = "operation";
+        private const string BUCKET_KEY = "bucket";
         private const string PREFIX_KEY = "prefix";
-        private string[] _requiredArgs = new string[] { OPERATION_KEY, PREFIX_KEY };
+        private string[] _requiredArgs = new string[] { OPERATION_KEY, BUCKET_KEY, PREFIX_KEY };
         private Dictionary<string, Type> _mappings;
 
         public OperationParser()
         {
             _mappings = new Dictionary<string, Type>
             {
+                {"restore", typeof(DeleteVersions)}
             };
         }
 
@@ -39,8 +41,9 @@ namespace S3Batcher.Arguments
                 throw new ArgumentMissingException($"Unsupported operation.");
             }
 
+            var bucket = relevantArgs[BUCKET_KEY].Value;
             var prefix = relevantArgs[PREFIX_KEY].Value;
-            return new OperationArgument(type, new OperationOptions(prefix));
+            return new OperationArgument(type, new OperationOptions(bucket, prefix));
         }
     }
 }
