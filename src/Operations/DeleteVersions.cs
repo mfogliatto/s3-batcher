@@ -22,7 +22,7 @@ namespace S3Batcher.Operations
 
         public void Execute(OperationOptions options)
         {
-            _logger.Info($"Starting objects deletion...");
+            _logger.Info($"Starting versions deletion...");
             var listRequest = new ListVersionsRequest
             {
                 BucketName = options.BucketName,
