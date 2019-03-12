@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 using S3Batcher.Logging;
+using S3Batcher.Objects;
 
 namespace S3Batcher.Operations
 {
@@ -30,27 +31,19 @@ namespace S3Batcher.Operations
                 MaxKeys = int.MaxValue
             };
 
-            var cont = true;
-            while (cont)
+            var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
+
+            var deleteRequest = new DeleteObjectsRequest
             {
-                var r = _s3Client.ListVersionsAsync(listRequest).Result;
-
-                var deleteRequest = new DeleteObjectsRequest
+                BucketName = listRequest.BucketName,
+                Objects = versions.Select(dm =>
                 {
-                    BucketName = listRequest.BucketName,
-                    Objects = r.Versions.Select(dm =>
-                    {
-                        _logger.Info($"Adding to delete chunk: {dm.Key} - [{dm.VersionId}]");
-                        return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
-                    }).ToList()
-                };
+                    _logger.Info($"Adding to delete chunk: {dm.Key} - [{dm.VersionId}]");
+                    return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
+                }).ToList()
+            };
 
-                _logger.Info("Deleting chunk...");
-                _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
-
-                listRequest.KeyMarker = r.NextKeyMarker;
-                cont = !string.IsNullOrWhiteSpace(listRequest.KeyMarker);
-            }
+            _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
             _logger.Info("Deletion completed!");
         }
     }
