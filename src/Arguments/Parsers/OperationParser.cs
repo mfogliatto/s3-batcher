@@ -17,7 +17,8 @@ namespace S3Batcher.Arguments
         {
             _mappings = new Dictionary<string, Type>
             {
-                {"delete-versions", typeof(DeleteVersions)}
+                {"delete-versions", typeof(DeleteVersions)},
+                {"restore-objects", typeof(RestoreObjects)}
             };
         }
 

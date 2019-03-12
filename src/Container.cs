@@ -9,7 +9,8 @@ namespace S3Batcher
     {
         private static Dictionary<Type, Func<object>> _registrations = new Dictionary<Type, Func<object>>
         {
-            { typeof(DeleteVersions), () => new DeleteVersions((AmazonS3Client)_registrations[typeof(AmazonS3Client)]())}
+            { typeof(DeleteVersions), () => new DeleteVersions((AmazonS3Client)_registrations[typeof(AmazonS3Client)]())},
+            { typeof(RestoreObjects), () => new RestoreObjects((AmazonS3Client)_registrations[typeof(AmazonS3Client)]())},
         };
 
         public static void Register(Type type, object obj)
