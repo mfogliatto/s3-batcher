@@ -7,7 +7,7 @@ using S3Batcher.Objects;
 
 namespace S3Batcher.Operations
 {
-    class RestoreObjects : IOperation
+    public sealed class RestoreObjects : IOperation
     {
         private IAmazonS3 _s3Client;
         private Logger _logger;

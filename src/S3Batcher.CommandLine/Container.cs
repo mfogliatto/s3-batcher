@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Amazon.S3;
 using S3Batcher.Operations;
 
-namespace S3Batcher
+namespace S3Batcher.CommandLine
 {
-    class Container
+    static class Container
     {
         private static Dictionary<Type, Func<object>> _registrations = new Dictionary<Type, Func<object>>
         {

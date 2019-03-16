@@ -9,4 +9,8 @@
     <PackageReference Include="AWSSDK.S3" Version="3.3.18.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\S3Batcher\S3Batcher.csproj" />
+  </ItemGroup>
+
 </Project>

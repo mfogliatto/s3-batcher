@@ -3,7 +3,7 @@ using System.IO;
 
 namespace S3Batcher.Logging
 {
-    public class Logger
+    public sealed class Logger
     {
         private readonly string _loggerName;
 

@@ -7,7 +7,7 @@ using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
 
-namespace S3Batcher
+namespace S3Batcher.CommandLine
 {
     class Playground
     {

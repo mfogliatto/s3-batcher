@@ -6,7 +6,7 @@ using Amazon.S3;
 
 namespace S3Batcher
 {
-    sealed class Authenticator
+    public sealed class Authenticator
     {
         public AmazonS3Client Authenticate(string accessKey, string secretKey, string regionName)
         {

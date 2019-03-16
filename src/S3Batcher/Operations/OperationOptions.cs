@@ -2,7 +2,7 @@ using Amazon;
 
 namespace S3Batcher.Operations
 {
-    class OperationOptions
+    public sealed class OperationOptions
     {
         public string BucketName { get; }
         public string Prefix { get; }

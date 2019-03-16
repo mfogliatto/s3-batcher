@@ -1,6 +1,6 @@
 namespace S3Batcher.Operations
 {
-    interface IOperation
+    public interface IOperation
     {
         void Execute(OperationOptions options);
     }

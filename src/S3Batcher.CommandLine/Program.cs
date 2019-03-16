@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Amazon.S3;
-using S3Batcher.Arguments;
+using S3Batcher.CommandLine.Arguments;
 using S3Batcher.Operations;
 
-namespace S3Batcher
+namespace S3Batcher.CommandLine
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

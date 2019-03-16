@@ -10,7 +10,7 @@ using S3Batcher.Objects;
 
 namespace S3Batcher.Operations
 {
-    class DeleteVersions : IOperation
+    public sealed class DeleteVersions : IOperation
     {
         private IAmazonS3 _s3Client;
         private Logger _logger;

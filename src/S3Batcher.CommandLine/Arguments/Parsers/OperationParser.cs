@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using S3Batcher.Operations;
 
-namespace S3Batcher.Arguments
+namespace S3Batcher.CommandLine.Arguments
 {
     sealed class OperationParser : IParser<OperationArgument>
     {

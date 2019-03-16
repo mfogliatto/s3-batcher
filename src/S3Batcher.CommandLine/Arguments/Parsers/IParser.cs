@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace S3Batcher.Arguments
+namespace S3Batcher.CommandLine.Arguments
 {
     interface IParser<out T>
     {

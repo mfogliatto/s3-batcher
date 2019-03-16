@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.Runtime;
 
-namespace S3Batcher.Arguments
+namespace S3Batcher.CommandLine.Arguments
 {
     sealed class AwsConnectionParser : IParser<AwsConnectionArgument>
     {

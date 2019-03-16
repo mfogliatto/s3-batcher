@@ -6,7 +6,7 @@ using Amazon.S3.Model;
 
 namespace S3Batcher.Objects
 {
-    public class S3ObjectVersionsEnumerable : IEnumerable<S3ObjectVersion>
+    public sealed class S3ObjectVersionsEnumerable : IEnumerable<S3ObjectVersion>
     {
         private readonly IAmazonS3 _s3Client;
         private readonly ListVersionsRequest _request;

@@ -1,9 +1,9 @@
 using System.Linq;
 using Amazon.Runtime;
 
-namespace S3Batcher.Arguments
+namespace S3Batcher.CommandLine.Arguments
 {
-    class AwsConnectionArgument
+    sealed class AwsConnectionArgument
     {
         public string AccessKey { get; }
         public string SecretKey { get; }

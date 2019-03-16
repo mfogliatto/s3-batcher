@@ -1,6 +1,6 @@
 using System;
 
-namespace S3Batcher.Arguments
+namespace S3Batcher.CommandLine.Arguments
 {
     sealed class Argument
     {
