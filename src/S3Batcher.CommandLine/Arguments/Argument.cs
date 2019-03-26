@@ -25,7 +25,7 @@ namespace S3Batcher.CommandLine.Arguments
 
         public bool Matches(string key)
         {
-            return string.Equals(Key, key, StringComparison.InvariantCulture);
+            return string.Equals(Key, key, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
