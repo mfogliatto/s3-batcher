@@ -44,7 +44,7 @@ namespace S3Batcher.CommandLine.Arguments
                 var found = arguments.FirstOrDefault(_ => _.Matches(definition.Name));
                 if (found == default(Argument) && !definition.IsOptional)
                 {
-                    throw new ArgumentMissingException($"Argument '{definition.Name}' is required.");
+                    throw new MissingArgumentException(definition.Name);
                 }
 
                 if (found != default(Argument))

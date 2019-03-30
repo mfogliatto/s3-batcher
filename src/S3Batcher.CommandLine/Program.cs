@@ -22,20 +22,27 @@ namespace S3Batcher.CommandLine
 
             var parsedArgs = args.Select(_ => new Argument(_)).ToList();
 
+            try
             {
-                var authParser = new AwsConnectionParser();
-                var connArg = authParser.GetFrom(parsedArgs);
+                {
+                    var authParser = new AwsConnectionParser();
+                    var connArg = authParser.GetFrom(parsedArgs);
 
-                var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region);
-                Container.Register(typeof(AmazonS3Client), client);
+                    var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region);
+                    Container.Register(typeof(AmazonS3Client), client);
+                }
+
+                {
+                    var opParser = new OperationParser();
+                    var opArgument = opParser.GetFrom(parsedArgs);
+                    var opInstance = (IOperation)Container.Resolve(opArgument.Type);
+
+                    opInstance.Execute(opArgument.Options);
+                }
             }
-
+            catch (Exception e)
             {
-                var opParser = new OperationParser();
-                var opArgument = opParser.GetFrom(parsedArgs);
-                var opInstance = (IOperation)Container.Resolve(opArgument.Type);
-
-                opInstance.Execute(opArgument.Options);
+                Console.WriteLine(e.Message);
             }
         }
 
