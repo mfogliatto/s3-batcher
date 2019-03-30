@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Amazon.S3;
 using S3Batcher.CommandLine.Arguments;
@@ -10,6 +11,15 @@ namespace S3Batcher.CommandLine
     {
         static void Main(string[] args)
         {
+            {
+                var showHelp = !args.Any() || args.Contains("--help");
+                if (showHelp)
+                {
+                    ShowHelp();
+                    return;
+                }
+            }
+
             var parsedArgs = args.Select(_ => new Argument(_)).ToList();
 
             {
@@ -27,6 +37,16 @@ namespace S3Batcher.CommandLine
 
                 opInstance.Execute(opArgument.Options);
             }
+        }
+
+        private static void ShowHelp()
+        {
+            var arguments = Enumerable.Concat(
+                AwsConnectionParser.GetArgumentDefinitions(),
+                OperationParser.GetArgumentDefinitions());
+
+            Console.WriteLine($"Usage: s3-batcher --arg=value");
+            Console.WriteLine($"Arguments:\n{string.Join("\n", arguments)}");
         }
     }
 }
