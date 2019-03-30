@@ -7,28 +7,33 @@ namespace S3Batcher.CommandLine.Arguments
 {
     sealed class AwsConnectionParser : IParser<AwsConnectionArgument>
     {
-        private const string ACCESS_KEY = "access-key";
-        private const string SECRET_KEY = "secret-key";
-        private const string REGION_KEY = "region";
-        private string[] _requiredArgs = new string[] { ACCESS_KEY, SECRET_KEY, REGION_KEY };
+        private static ArgumentDefinition AccessArg = ArgumentDefinition.Required("access-key", "Your AWS Access Key ID.");
+        private static ArgumentDefinition SecretArg = ArgumentDefinition.Required("secret-key", "Your AWS Secret Access Key.");
+        private static ArgumentDefinition RegionArg = ArgumentDefinition.Required("region", "The region name where your S3 instance is (e.g.: us-west-1, us-west-2, etc.).");
+        private static ArgumentDefinition[] _argDefinitions = new ArgumentDefinition[] { AccessArg, SecretArg, RegionArg };
+
+        public static IEnumerable<ArgumentDefinition> GetArgumentDefinitions()
+        {
+            return _argDefinitions;
+        }
 
         public AwsConnectionArgument GetFrom(IEnumerable<Argument> args)
         {
-            var relevantArgs = new Dictionary<string, Argument>();
-            foreach (var arg in _requiredArgs)
+            var argValues = new Dictionary<string, string>();
+            foreach (var arg in _argDefinitions)
             {
-                var found = args.FirstOrDefault(_ => _.Matches(arg));
+                var found = args.FirstOrDefault(_ => _.Matches(arg.Name));
                 if (found == default(Argument))
                 {
                     throw new ArgumentMissingException($"An --[{arg}] argument is required.");
                 }
 
-                relevantArgs.Add(found.Key, found);
+                argValues.Add(found.Name, found.Value);
             }
 
-            var accessKey = relevantArgs[ACCESS_KEY].Value;
-            var secretKey = relevantArgs[SECRET_KEY].Value;
-            var region = relevantArgs[REGION_KEY].Value;
+            var accessKey = argValues[AccessArg.Name];
+            var secretKey = argValues[SecretArg.Name];
+            var region = argValues[RegionArg.Name];
             return new AwsConnectionArgument(accessKey, secretKey, region);
         }
     }

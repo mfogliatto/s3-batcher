@@ -4,13 +4,10 @@ namespace S3Batcher.CommandLine.Arguments
 {
     sealed class Argument
     {
-        private const string PREFIX = "--";
-        private const char VALUE_DELIMITER = '=';
-
         private string _arg;
 
-        public string Key => _arg.Substring(PREFIX.Length, _arg.IndexOf(VALUE_DELIMITER) - PREFIX.Length);
-        public string Value => _arg.Substring(_arg.IndexOf(VALUE_DELIMITER) + 1);
+        public string Name => _arg.Substring(ArgumentDefinition.PREFIX.Length, _arg.IndexOf(ArgumentDefinition.VALUE_DELIMITER) - ArgumentDefinition.PREFIX.Length);
+        public string Value => _arg.Substring(_arg.IndexOf(ArgumentDefinition.VALUE_DELIMITER) + 1);
 
         public Argument(string arg)
         {
@@ -20,12 +17,12 @@ namespace S3Batcher.CommandLine.Arguments
 
         private void Validate()
         {
-            if (!_arg.StartsWith(PREFIX)) throw new ArgumentException($"Invalid argument {_arg}.");
+            if (!_arg.StartsWith(ArgumentDefinition.PREFIX)) throw new ArgumentException($"Invalid argument {_arg}.");
         }
 
-        public bool Matches(string key)
+        public bool Matches(string name)
         {
-            return string.Equals(Key, key, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(Name, name, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
