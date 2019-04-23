@@ -52,8 +52,8 @@ namespace S3Batcher.CommandLine
                 AwsConnectionParser.GetArgumentDefinitions(),
                 OperationParser.GetArgumentDefinitions());
 
-            Console.WriteLine($"s3-batcher v{typeof(Program).Assembly.GetName().Version.ToString(2)}");
-            Console.WriteLine($"Usage: s3-batcher --arg=value");
+            Console.WriteLine($"s3batcher-cli v{typeof(Program).Assembly.GetName().Version.ToString(2)}");
+            Console.WriteLine($"Usage: s3batcher-cli --arg=value");
             Console.WriteLine($"Arguments:\n{string.Join("\n", arguments)}");
         }
     }

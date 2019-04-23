@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <Version>0.1</Version>
+    <AssemblyName>s3batcher-cli</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
