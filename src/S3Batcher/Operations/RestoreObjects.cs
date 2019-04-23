@@ -25,7 +25,7 @@ namespace S3Batcher.Operations
             {
                 BucketName = options.BucketName,
                 Prefix = options.Prefix,
-                MaxKeys = int.MaxValue
+                MaxKeys = options.MaxKeys
             };
 
             var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
