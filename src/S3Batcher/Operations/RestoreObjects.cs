@@ -20,7 +20,7 @@ namespace S3Batcher.Operations
 
         public void Execute(OperationOptions options)
         {
-            _logger.Info($"Starting objects restore...");
+            _logger.Info($"Starting objects restore {(options.DryRun ? "(dry run)" : string.Empty)}...");
             var listRequest = new ListVersionsRequest
             {
                 BucketName = options.BucketName,
@@ -40,7 +40,11 @@ namespace S3Batcher.Operations
                 }).ToList()
             };
 
-            _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
+            if (!options.DryRun)
+            {
+                _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
+            }
+
             _logger.Info("Restoring completed!");
         }
     }

@@ -16,7 +16,8 @@ namespace S3Batcher.CommandLine.Arguments
         private static ArgumentDefinition OperationArg = ArgumentDefinition.Required("operation", $"The S3 operation that you want to perform in batch. Possible values: {string.Join(",", Mappings.Keys)}.");
         private static ArgumentDefinition BucketArg = ArgumentDefinition.Required("bucket", "The S3 bucket that the selected operation will target.");
         private static ArgumentDefinition PrefixArg = ArgumentDefinition.Optional("prefix", "The prefix that will be used to match the corresponding S3 objects. If not specified, all objects will be matched.", "");
-        private static ArgumentDefinition[] _usedArguments = new ArgumentDefinition[] { OperationArg, BucketArg, PrefixArg };
+        private static ArgumentDefinition DryRunArg = ArgumentDefinition.Optional("dryrun", "If set to true, it will fetch and list all potentially affected objects but will not perform any mutations on source.", "false");
+        private static ArgumentDefinition[] _usedArguments = new ArgumentDefinition[] { OperationArg, BucketArg, PrefixArg, DryRunArg };
 
         public static IEnumerable<ArgumentDefinition> GetArgumentDefinitions()
         {
@@ -35,7 +36,9 @@ namespace S3Batcher.CommandLine.Arguments
 
             var bucket = argValues[BucketArg.Name];
             var prefix = argValues[PrefixArg.Name];
-            return new OperationArgument(type, new OperationOptions(bucket, prefix));
+            var dryRun = bool.Parse(argValues[DryRunArg.Name]);
+
+            return new OperationArgument(type, new OperationOptions(bucket, prefix, dryRun));
         }
     }
 }
