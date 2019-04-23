@@ -15,7 +15,7 @@ namespace S3Batcher.Operations
         public RestoreObjects(IAmazonS3 s3Client)
         {
             _s3Client = s3Client ?? throw new ArgumentNullException(nameof(s3Client));
-            _logger = new Logger(typeof(DeleteVersions));
+            _logger = new Logger(typeof(RestoreObjects));
         }
 
         public void Execute(OperationOptions options)
