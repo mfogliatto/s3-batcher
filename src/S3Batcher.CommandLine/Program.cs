@@ -52,7 +52,7 @@ namespace S3Batcher.CommandLine
         {
             var arguments = GetArgumentDefinitions();
 
-            Console.WriteLine($"{CmdName} v{typeof(Program).Assembly.GetName().Version.ToString(2)}");
+            Console.WriteLine($"{CmdName} v{typeof(Program).Assembly.GetName().Version.ToString(3)}");
             Console.WriteLine($"Usage: {CmdName} --arg=value");
             Console.WriteLine($"Arguments:\n{string.Join("\n", arguments)}");
         }
