@@ -17,7 +17,8 @@ namespace S3Batcher.CommandLine.Arguments
 
         private void Validate()
         {
-            if (!_arg.StartsWith(ArgumentDefinition.PREFIX)) throw new ArgumentException($"Invalid argument {_arg}.");
+            if (!_arg.StartsWith(ArgumentDefinition.PREFIX) ||
+            _arg.IndexOf(ArgumentDefinition.VALUE_DELIMITER) == -1) throw new ArgumentException($"Invalid argument {_arg}.");
         }
 
         public bool Matches(string name)
