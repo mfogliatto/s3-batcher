@@ -8,3 +8,16 @@ Although AWS provides a pretty comprehensive UI to manage your objects, this is 
 
 ## Solution
 S3 Batcher allows you to execute a number of operations like restoring previous versions to multiple objects in a single operation, providing a way to specify a criteria for AWS S3 to match those and apply the desired effect. Even with the bug stated above fixed, this makes it easier and extends the capabilities to work with your objects and apply predicates to determine your actual working set.
+
+## How to use
+
+The usage is quite simple. You basically need to provide credentials and the target resource you want to work with as the following example shows:
+
+```shell
+s3batcher-cli --access-key=MYSUPERSECRETACCESSKEY10
+              --secret-key=AbCdeF1GhKijL12/jfgThI01234XyZ
+              --region=us-east-1
+              --operation=restore-objects
+              --bucket=test-bucket
+              --prefix=prefix/to/my/objects
+```
