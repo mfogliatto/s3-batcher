@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -21,7 +19,7 @@ namespace S3Batcher.Operations
             _logger = new Logger(typeof(DeleteVersions));
         }
 
-        public void Execute(OperationOptions options)
+        public async Task ExecuteAsync(OperationOptions options)
         {
             _logger.Info($"Starting versions deletion {(options.DryRun ? "(dry run)" : string.Empty)}...");
             var listRequest = new ListVersionsRequest
@@ -32,11 +30,12 @@ namespace S3Batcher.Operations
             };
 
             var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
+            var allVersions = await versions.GetAllAsync();
 
             var deleteRequest = new DeleteObjectsRequest
             {
                 BucketName = listRequest.BucketName,
-                Objects = versions.Select(dm =>
+                Objects = allVersions.Select(dm =>
                 {
                     _logger.Info($"Adding to delete chunk: {dm.Key} - [{dm.VersionId}]");
                     return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
@@ -45,7 +44,7 @@ namespace S3Batcher.Operations
 
             if (!options.DryRun)
             {
-                _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
+                await _s3Client.DeleteObjectsAsync(deleteRequest);
             }
 
             _logger.Info("Deletion completed!");

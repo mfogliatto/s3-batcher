@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Amazon.S3;
 using S3Batcher.CommandLine.Arguments;
 using S3Batcher.Operations;
@@ -10,7 +11,7 @@ namespace S3Batcher.CommandLine
     static class Program
     {
         private static string CmdName = "s3batcher-cli";
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             {
                 var showHelp = !args.Any() || args.Contains("--help");
@@ -39,7 +40,7 @@ namespace S3Batcher.CommandLine
                     var opArgument = opParser.GetFrom(parsedArgs);
                     var opInstance = (IOperation)Container.Resolve(opArgument.Type);
 
-                    opInstance.Execute(opArgument.Options);
+                    await opInstance.ExecuteAsync(opArgument.Options);
                 }
             }
             catch (Exception e)

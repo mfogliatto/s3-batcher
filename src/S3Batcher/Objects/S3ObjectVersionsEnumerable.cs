@@ -1,16 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
 
 namespace S3Batcher.Objects
 {
-    sealed class S3ObjectVersionsEnumerable : IEnumerable<S3ObjectVersion>
+    sealed class S3ObjectVersionsEnumerable
     {
         private readonly IAmazonS3 _s3Client;
         private readonly ListVersionsRequest _request;
-        private ListVersionsResponse _response;
 
         public S3ObjectVersionsEnumerable(IAmazonS3 s3Client, ListVersionsRequest request)
         {
@@ -18,25 +16,19 @@ namespace S3Batcher.Objects
             _request = request;
         }
 
-        public IEnumerator<S3ObjectVersion> GetEnumerator()
+        public async Task<List<S3ObjectVersion>> GetAllAsync()
         {
+            var results = new List<S3ObjectVersion>();
             var cont = true;
             while (cont)
             {
-                _response = _s3Client.ListVersionsAsync(_request).Result;
-                foreach (var o in _response.Versions)
-                {
-                    yield return o;
-                }
+                var response = await _s3Client.ListVersionsAsync(_request);
+                results.AddRange(response.Versions);
 
-                _request.KeyMarker = _response.NextKeyMarker;
+                _request.KeyMarker = response.NextKeyMarker;
                 cont = !string.IsNullOrWhiteSpace(_request.KeyMarker);
             }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            return results;
         }
     }
 }
