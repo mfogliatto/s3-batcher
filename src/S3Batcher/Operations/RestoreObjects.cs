@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -9,6 +10,7 @@ namespace S3Batcher.Operations
 {
     public sealed class RestoreObjects : IOperation
     {
+        private const int BatchSize = 1000;
         private IAmazonS3 _s3Client;
         private Logger _logger;
 
@@ -30,22 +32,39 @@ namespace S3Batcher.Operations
 
             var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
 
+            var batch = new List<KeyVersion>(BatchSize);
+            foreach (var version in versions.Where(_ => _.IsDeleteMarker))
+            {
+                _logger.Info($"Adding to restore chunk: {version.Key} - [{version.VersionId}]");
+                batch.Add(new KeyVersion { Key = version.Key, VersionId = version.VersionId });
+
+                if (batch.Count >= BatchSize)
+                {
+                    DeleteBatch(options, batch);
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                DeleteBatch(options, batch);
+            }
+
+            _logger.Info("Restoring completed!");
+        }
+
+        private void DeleteBatch(OperationOptions options, List<KeyVersion> objects)
+        {
             var deleteRequest = new DeleteObjectsRequest
             {
-                BucketName = listRequest.BucketName,
-                Objects = versions.Where(_ => _.IsDeleteMarker).Select(dm =>
-                {
-                    _logger.Info($"Adding to restore chunk: {dm.Key} - [{dm.VersionId}]");
-                    return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
-                }).ToList()
+                BucketName = options.BucketName,
+                Objects = new List<KeyVersion>(objects)
             };
 
             if (!options.DryRun)
             {
                 _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
             }
-
-            _logger.Info("Restoring completed!");
         }
     }
 }
