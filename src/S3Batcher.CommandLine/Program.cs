@@ -30,7 +30,7 @@ namespace S3Batcher.CommandLine
                     var authParser = new AwsConnectionParser();
                     var connArg = authParser.GetFrom(parsedArgs);
 
-                    var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region);
+                    var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region, connArg.Profile);
                     Container.Register(typeof(AmazonS3Client), client);
                 }
 
