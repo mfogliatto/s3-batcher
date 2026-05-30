@@ -288,3 +288,7 @@ __pycache__/
 *.xsd.cs
 
 .vscode
+# Environment files
+.env
+.env.*
+*.env
