@@ -12,6 +12,7 @@ namespace S3Batcher.Operations
 {
     public sealed class DeleteVersions : IOperation
     {
+        private const int BatchSize = 1000;
         private IAmazonS3 _s3Client;
         private Logger _logger;
 
@@ -32,23 +33,38 @@ namespace S3Batcher.Operations
             };
 
             var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
+            var batch = new List<KeyVersion>(BatchSize);
 
-            var deleteRequest = new DeleteObjectsRequest
+            foreach (var version in versions)
             {
-                BucketName = listRequest.BucketName,
-                Objects = versions.Select(dm =>
+                _logger.Info($"Adding to delete chunk: {version.Key} - [{version.VersionId}]");
+                batch.Add(new KeyVersion { Key = version.Key, VersionId = version.VersionId });
+
+                if (batch.Count >= BatchSize)
                 {
-                    _logger.Info($"Adding to delete chunk: {dm.Key} - [{dm.VersionId}]");
-                    return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
-                }).ToList()
-            };
+                    FlushBatch(options, batch);
+                }
+            }
+
+            FlushBatch(options, batch);
+
+            _logger.Info("Deletion completed!");
+        }
+
+        private void FlushBatch(OperationOptions options, List<KeyVersion> batch)
+        {
+            if (batch.Count == 0) return;
 
             if (!options.DryRun)
             {
-                _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
+                _s3Client.DeleteObjectsAsync(new DeleteObjectsRequest
+                {
+                    BucketName = options.BucketName,
+                    Objects = new List<KeyVersion>(batch)
+                }).Wait();
             }
 
-            _logger.Info("Deletion completed!");
+            batch.Clear();
         }
     }
 }

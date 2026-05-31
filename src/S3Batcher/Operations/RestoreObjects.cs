@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Amazon.S3;
 using Amazon.S3.Model;
 using S3Batcher.Logging;
@@ -9,6 +9,7 @@ namespace S3Batcher.Operations
 {
     public sealed class RestoreObjects : IOperation
     {
+        private const int BatchSize = 1000;
         private IAmazonS3 _s3Client;
         private Logger _logger;
 
@@ -29,23 +30,40 @@ namespace S3Batcher.Operations
             };
 
             var versions = new S3ObjectVersionsEnumerable(_s3Client, listRequest);
+            var batch = new List<KeyVersion>(BatchSize);
 
-            var deleteRequest = new DeleteObjectsRequest
+            foreach (var version in versions)
             {
-                BucketName = listRequest.BucketName,
-                Objects = versions.Where(_ => _.IsDeleteMarker).Select(dm =>
+                if (!version.IsDeleteMarker) continue;
+
+                _logger.Info($"Adding to restore chunk: {version.Key} - [{version.VersionId}]");
+                batch.Add(new KeyVersion { Key = version.Key, VersionId = version.VersionId });
+
+                if (batch.Count >= BatchSize)
                 {
-                    _logger.Info($"Adding to restore chunk: {dm.Key} - [{dm.VersionId}]");
-                    return new KeyVersion { Key = dm.Key, VersionId = dm.VersionId };
-                }).ToList()
-            };
+                    FlushBatch(options, batch);
+                }
+            }
+
+            FlushBatch(options, batch);
+
+            _logger.Info("Restoring completed!");
+        }
+
+        private void FlushBatch(OperationOptions options, List<KeyVersion> batch)
+        {
+            if (batch.Count == 0) return;
 
             if (!options.DryRun)
             {
-                _s3Client.DeleteObjectsAsync(deleteRequest).Wait();
+                _s3Client.DeleteObjectsAsync(new DeleteObjectsRequest
+                {
+                    BucketName = options.BucketName,
+                    Objects = new List<KeyVersion>(batch)
+                }).Wait();
             }
 
-            _logger.Info("Restoring completed!");
+            batch.Clear();
         }
     }
 }
