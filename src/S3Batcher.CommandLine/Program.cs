@@ -26,15 +26,13 @@ namespace S3Batcher.CommandLine
                 var parsedArgs = args.Select(_ => new Argument(_)).ToList();
                 Validate(parsedArgs);
 
-                {
-                    var authParser = new AwsConnectionParser();
-                    var connArg = authParser.GetFrom(parsedArgs);
+                var authParser = new AwsConnectionParser();
+                var connArg = authParser.GetFrom(parsedArgs);
 
-                    var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region);
+                using (var client = new Authenticator().Authenticate(connArg.AccessKey, connArg.SecretKey, connArg.Region))
+                {
                     Container.Register(typeof(AmazonS3Client), client);
-                }
 
-                {
                     var opParser = new OperationParser();
                     var opArgument = opParser.GetFrom(parsedArgs);
                     var opInstance = (IOperation)Container.Resolve(opArgument.Type);
